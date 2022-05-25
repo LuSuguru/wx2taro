@@ -36,12 +36,15 @@ export function parse(state: State) {
       continue
     }
 
-    // 类型等于 Type.TagStart
+    // token 一定是 tag-start 类型
+    // 根据 html 语法
+    // tag-start 后面必定是 tag 类型的 token，处理 type === Type.Tag
     const tagToken = tokens[++cursor]
     cursor++
 
     const tagName = tagToken.content?.toLowerCase()
 
+    // 当前是个闭合的标签 token
     if (token.close) {
       let index = stack.length - 1
       let shouldRewind = false
@@ -58,15 +61,17 @@ export function parse(state: State) {
       }
 
       if (shouldRewind) {
-        rewindStack(stack, index, token.position?.start, tokens[cursor - 1].position?.end)
+        rewindStack(stack, index, token.position.start, tokens[cursor - 1].position.end)
         break
       } else {
         continue
       }
     }
 
+    // 根据 html 语法，tag 后直到标签闭合（token-end）之间一定都是属性（attribute） 的 token
+    // 处理标签内的属性，type === Type.Attrubite
     const attributes: string[] = []
-    let attrToken
+    let attrToken: Token
 
     for (cursor; cursor < tokens.length; cursor++) {
       attrToken = tokens[cursor]
@@ -94,30 +99,33 @@ export function parse(state: State) {
 
     nodes.push(elementNode)
 
+    // 标签未关闭，说明有子内容
     if (!attrToken?.close) {
       const size = stack.push({ tagName, children, position })
 
       const innerState = { tokens, cursor, stack }
-      parse(innerState);
+      parse(innerState)
 
-      ({ cursor } = innerState)
+      // 说明当前整个标签已完整处理完，更新 position
       if (stack.length === size) {
-        elementNode.position.end = tokens[cursor - 1]?.position?.end
+        elementNode.position.end = tokens[innerState.cursor - 1]?.position?.end
       }
     }
   }
 }
 
 export default function parser(tokens: Token[]) {
+  const root: State['stack'][0] = {
+    tagName: '',
+    children: []
+  }
+
   const state: State = {
     tokens,
     cursor: 0,
-    stack: [{
-      tagName: '',
-      children: []
-    }]
+    stack: [root]
   }
 
   parse(state)
-  return tokens
+  return root.children
 }

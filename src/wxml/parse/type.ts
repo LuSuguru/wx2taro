@@ -43,8 +43,17 @@ export interface Token {
 }
 
 export interface TextNode {
-  type: Type.Text,
-  content: string,
+  type: Type.Text
+  content: string
+  position: {
+    start: Position
+    end: Position
+  }
+}
+
+export interface CommentNode {
+  type: Type.Comment
+  content: string
   position: {
     start: Position
     end: Position
@@ -52,7 +61,7 @@ export interface TextNode {
 }
 
 export interface ElementNode {
-  type: Type.Element,
+  type: Type.Element
   tagName: string
   attributes: string[]
   children: (ElementNode | TextNode)[]
