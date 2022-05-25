@@ -115,6 +115,7 @@
     "@typescript-eslint/ban-types": 0,
     "react/jsx-props-no-spreading": 0,
     "@typescript-eslint/no-empty-function": 0,
-    "no-constant-condition": 0
+    "no-constant-condition": 0,
+    "no-use-before-define": 0
   }
 }

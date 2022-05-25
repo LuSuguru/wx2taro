@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-05-20 16:53:01
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-05-20 20:56:39
+ * @LastEditTime: 2022-05-25 18:38:36
  * @Description: 类型
  */
 
@@ -64,19 +64,36 @@ export interface ElementNode {
   type: Type.Element
   tagName: string
   attributes: string[]
-  children: (ElementNode | TextNode)[]
+  children: Node[]
   position: {
     start: Position
     end: Position
   }
 }
 
+export type Node = ElementNode | TextNode | CommentNode
+
 /** 栈节点 */
 export interface StackNode {
   tagName: string
-  children: (ElementNode | TextNode)[]
+  children: Node[]
   position?: {
     start?: Position
     end?: Position
+  }
+}
+
+export interface ASTNode {
+  type: Type.Attribute | Type.Comment | Type.Text | Type.Element
+  tagName?: string
+  attributes?: {
+    key: string
+    value: string
+  }[]
+  children?: ASTNode[]
+  content?: string
+  position: {
+    start: Position
+    end: Position
   }
 }
