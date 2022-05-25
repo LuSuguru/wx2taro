@@ -19,7 +19,9 @@ export enum Type {
   /** Tag 标签 */
   Tag = 'tag',
   /** 属性 */
-  Attribute = 'attribute'
+  Attribute = 'attribute',
+  /** 元素 */
+  Element = 'element'
 }
 
 /** 位置信息 */
@@ -40,8 +42,32 @@ export interface Token {
   }
 }
 
+export interface TextNode {
+  type: Type.Text,
+  content: string,
+  position: {
+    start: Position
+    end: Position
+  }
+}
+
+export interface ElementNode {
+  type: Type.Element,
+  tagName: string
+  attributes: string[]
+  children: (ElementNode | TextNode)[]
+  position: {
+    start: Position
+    end: Position
+  }
+}
+
 /** 栈节点 */
 export interface StackNode {
   tagName: string
-  children: Token[]
+  children: (ElementNode | TextNode)[]
+  position?: {
+    start?: Position
+    end?: Position
+  }
 }
