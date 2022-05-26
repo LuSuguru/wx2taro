@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-05-20 16:37:38
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-05-20 20:57:01
+ * @LastEditTime: 2022-05-26 19:21:41
  * @Description: 语法分析
  */
 import { Token, StackNode, Type, Position, ElementNode } from './type'
@@ -27,11 +27,15 @@ export function parse(state: State) {
   const nodes = stack[stack.length - 1].children
   let { cursor } = state
 
+  console.log(cursor, tokens[cursor - 2], stack[stack.length - 1])
+
   while (cursor < tokens.length) {
     const token = tokens[cursor]
 
     if (token.type !== Type.TagStart) {
+      // console.log(token)
       nodes.push(token as any)
+
       cursor++
       continue
     }
@@ -105,6 +109,7 @@ export function parse(state: State) {
 
       const innerState = { tokens, cursor, stack }
       parse(innerState)
+      cursor = innerState.cursor
 
       // 说明当前整个标签已完整处理完，更新 position
       if (stack.length === size) {

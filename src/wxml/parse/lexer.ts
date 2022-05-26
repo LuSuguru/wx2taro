@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-05-20 16:36:54
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-05-20 20:40:26
+ * @LastEditTime: 2022-05-26 16:04:08
  * @Description: 词法分析
  */
 
@@ -145,18 +145,20 @@ export function lexTagName(state: State) {
 
 export function lexTagAttributes(state: State) {
   const { str, position, tokens } = state
+
   let cur = position.index
   let quote = null // 引号标识符
   let wordBegin = cur
 
   const words = [] // "key", "key=value", "key='value'"
+
   while (cur < str.length) {
     const char = str.charAt(cur)
 
     // 处理引号
     if (quote) {
       if (char === quote) {
-        quote === null
+        quote = null
       }
       cur++
       continue
@@ -171,7 +173,7 @@ export function lexTagAttributes(state: State) {
     }
 
     // 处理空格
-    if (/\s+/.test(char)) {
+    if (/\s/.test(char)) {
       if (cur !== wordBegin) {
         words.push(str.slice(wordBegin, cur))
       }
