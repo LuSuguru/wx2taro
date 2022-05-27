@@ -2,10 +2,10 @@
  * @Author: 芦杰
  * @Date: 2022-05-20 16:37:38
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-05-26 19:21:41
+ * @LastEditTime: 2022-05-27 15:05:40
  * @Description: 语法分析
  */
-import { Token, StackNode, Type, Position, ElementNode } from './type'
+import { Token, StackNode, Type, Position, ElementNode } from '../type'
 
 interface State {
   tokens: Token[]
@@ -26,8 +26,6 @@ export function parse(state: State) {
   const { tokens, stack } = state
   const nodes = stack[stack.length - 1].children
   let { cursor } = state
-
-  console.log(cursor, tokens[cursor - 2], stack[stack.length - 1])
 
   while (cursor < tokens.length) {
     const token = tokens[cursor]
@@ -117,9 +115,11 @@ export function parse(state: State) {
       }
     }
   }
+  state.cursor = cursor
 }
 
 export default function parser(tokens: Token[]) {
+  // debugger
   const root: State['stack'][0] = {
     tagName: '',
     children: []

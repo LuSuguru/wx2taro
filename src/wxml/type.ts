@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-05-20 16:53:01
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-05-25 18:38:36
+ * @LastEditTime: 2022-05-27 17:53:28
  * @Description: 类型
  */
 
@@ -87,9 +87,8 @@ export interface ASTNode {
   type: Type.Attribute | Type.Comment | Type.Text | Type.Element
   tagName?: string
   attributes?: {
-    key: string
-    value: string
-  }[]
+    [key: string]: any
+  }
   children?: ASTNode[]
   content?: string
   position: {

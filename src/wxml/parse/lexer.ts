@@ -2,11 +2,11 @@
  * @Author: 芦杰
  * @Date: 2022-05-20 16:36:54
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-05-26 16:04:08
+ * @LastEditTime: 2022-05-27 15:05:42
  * @Description: 词法分析
  */
 
-import { Position, Token, Type } from './type'
+import { Position, Token, Type } from '../type'
 
 export interface State {
   str: string

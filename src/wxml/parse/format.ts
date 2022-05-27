@@ -2,11 +2,11 @@
  * @Author: 芦杰
  * @Date: 2022-05-25 18:21:51
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-05-25 18:40:50
+ * @LastEditTime: 2022-05-27 17:53:30
  * @Description: 对语法分析后的语法树进行格式化，
  */
 
-import { Node, Type, ASTNode } from './type'
+import { Node, Type, ASTNode } from '../type'
 
 // TODO：修改成 wxml 的解析
 function unquote(str: string) {
@@ -20,14 +20,17 @@ function unquote(str: string) {
 }
 
 function formatAttributes(attributes: string[]) {
-  return attributes.map(attribute => {
+  return attributes.reduce((pre, attribute) => {
     const parts = attribute.trim().split('=')
 
     const key = parts[0]
     const value = typeof parts[1] === 'string' ? unquote(parts[1]) : null
 
-    return { key, value }
-  })
+    return {
+      ...pre,
+      [key]: value
+    }
+  }, {})
 }
 
 export default function format(nodes: Node[]) {
