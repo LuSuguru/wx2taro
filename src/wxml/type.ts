@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-05-20 16:53:01
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-05-27 17:53:28
+ * @LastEditTime: 2022-05-31 18:09:15
  * @Description: 类型
  */
 
@@ -91,6 +91,7 @@ export interface ASTNode {
   }
   children?: ASTNode[]
   content?: string
+  directives?: [string, string][]
   position: {
     start: Position
     end: Position

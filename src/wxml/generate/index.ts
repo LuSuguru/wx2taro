@@ -2,35 +2,56 @@
  * @Author: 芦杰
  * @Date: 2022-05-27 15:05:06
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-05-27 19:09:59
+ * @LastEditTime: 2022-06-01 18:21:51
  * @Description: 生成代码
  */
 
 import { ASTNode, Type } from '../type'
 import { titleCase } from './utils'
+import { propsMap, componentPathMap } from './config'
+
+interface State {
+  imports: string[]
+  methods: string[]
+  compSrcMap: Map<string, string[]>
+  blocks: {
+    [key: string]: string
+  }
+}
+
+const eventMap = {
+  tap: 'onClick',
+  confirm: 'onKeyDown',
+}
 
 let clock = 0
+// 组件路径缓存
+const componentPathCache = new Set()
 
 export default function generate(nodes: ASTNode[]) {
-  const state = {
+  const state: State = {
+    imports: [],
     methods: [],
+    compSrcMap: new Map(),
     blocks: {},
   }
 
   for (let i = 0; i < nodes.length; i++) {
     const current = nodes[i]
     const next = nodes[i + 1]
-    const block = generateNode(current, next, state)
+    const block = generateNode(current, state, next)
 
     if (block) {
       state.blocks[clock++] = block
     }
   }
+  componentPathCache.clear()
+  return state
 }
 
-function generateNode(node: ASTNode, state, next?: ASTNode) {
+function generateNode(node: ASTNode, state: State, next?: ASTNode) {
   if (node.type === Type.Text) {
-    return compileExpression(node.content, 'text')
+    return compileExpression(node.content, Type.Text)
   }
 
   if (node.type === Type.Comment) {
@@ -57,15 +78,172 @@ function generateNode(node: ASTNode, state, next?: ASTNode) {
         return `$slot$${name}$`
       }
     }
+      return ''
+    // 编译 import
+    case 'import': {
+      return ''
+    }
     default: {
-      let code = `<${titleCase(node.tagName)} `
+      const tagName = titleCase(node.tagName)
+
+      let code = `<${tagName} `
       code += generateProps(node, state)
 
-      if (node.children) {
+      if (node.children.length) {
+        code += ' >'
         code += node.children.map((item, index) => generateNode(item, state, node.children[index + 1])).join('\n')
+        code += `</${tagName}>`
+      } else {
+        code += ' />'
+      }
+
+      // 处理组件引用
+      if (!componentPathCache.has(tagName)) {
+        for (const [path, components] of componentPathMap) {
+          if (components.includes(tagName)) {
+            const arr = state.compSrcMap.get(path) || []
+            state.compSrcMap.set(path, [...arr, tagName])
+
+            componentPathCache.add(tagName)
+            break
+          }
+        }
+      }
+
+      if (Object.keys(node.attributes).includes('slot')) {
+        state.blocks[node.attributes.slot] = code
+        return ''
+      }
+
+      if (node.directives) {
+        code = generateDirect(node, code, next)
+      }
+
+      return code
+    }
+  }
+}
+
+/**
+ * 解析 wxml 的微信指令 wx:for, wx:if 等等
+ * @param node 当前 节点
+ * @param code 当前 code
+ * @param next 下一个 节点
+ * @returns 返回 code
+ */
+let ifCode = ''
+
+function generateDirect(node: ASTNode, code: string, next: ASTNode) {
+  for (let i = 0; i < node.directives.length; i++) {
+    const [name, value] = node.directives[i]
+    const compiled = compileExpression(value, 'direct')
+
+    if (code[0] === '{') {
+      code = `<div>${code}</div>`
+    }
+
+    switch (name) {
+      case 'wx:for':
+        const { item, index } = findForItem(node)
+        code = `{(${compiled}).map((${item},${index}) => (${code}))}`
+        break
+      case 'wx:if':
+      case 'wx:elseif':
+      case 'wx:elif': {
+        ifCode += `{${compiled}?${code}}:`
+
+        // 下一个兄弟节点 是 else 节点
+        if (Object.keys(next || {}).some(name => name.includes('else'))) {
+          continue
+        } else {
+          code = `${ifCode}null}`
+          ifCode = ''
+        }
+        break
+      }
+      case 'wx:else': {
+        if (ifCode === '') {
+          ifCode = `{!${compiled}?${code}:null}`
+        } else {
+          ifCode += `${code}}`
+        }
+        code = ifCode
+        ifCode = ''
+        break
       }
     }
   }
+  return code
+}
+
+/**
+ * 解析 for 循环中的 item 和 index 指令，返回指令内容
+ * @param node 节点
+ * @returns item,index
+ */
+function findForItem({ directives }: ASTNode) {
+  let item = ''
+  let index = ''
+
+  for (let i = 0; i < directives.length; i++) {
+    const [name, value] = directives[i]
+    if (name === 'wx:for-item') {
+      item = value
+    }
+    if (name === 'wx:for-index') {
+      index = value
+    }
+  }
+  return {
+    item: item || 'item',
+    index: index || 'index'
+  }
+}
+
+/**
+ * 根据节点的 attributes 生成 props 代码
+ * @param node 当前 node 节点
+ * @param state 全局状态
+ * @returns props code
+ */
+function generateProps(node: ASTNode, state: State) {
+  let code = ''
+  Object.entries(node.attributes).forEach(([name, value]) => {
+    if (name.startsWith('wx:')) {
+      if (node.directives) {
+        node.directives.push([name, value])
+      } else {
+        node.directives = [[name, value]]
+      }
+    } else if (name.startsWith('bind')) {
+      if (!state.methods.includes(value)) {
+        state.methods.push(value)
+      }
+
+      const [eventKey] = wriedName(name)
+      code += `${eventKey}={${value}()}`
+    } else if (node.tagName === 'import') {
+      state.imports.push(value)
+    } else {
+      const compiled = compileExpression(value, node.type)
+      code += `${propsMap.get(name) || name}=${compiled || 'true'}`
+    }
+  })
+
+  return code
+}
+
+/**
+ * 转换事件名
+ * @param key 事件值
+ * @returns [转换后的事件名，源事件名]
+ */
+function wriedName(key: string) {
+  key = key.replace(/(bind|catch)\:?/g, '')
+
+  return key in eventMap
+    ? [eventMap[key], key]
+    : ['on' + key[0].toUpperCase() + key.substring(1), key]
 }
 
 /**
@@ -73,11 +251,26 @@ function generateNode(node: ASTNode, state, next?: ASTNode) {
  * @param expression 表达式
  * @param type 类型
  */
-function compileExpression(expression: string, type: 'text') {
+function compileExpression(expression: string, type: Type | 'direct') {
   switch (type) {
-    case 'text':
+    case 'direct':
+      return expression.replace('{{', '').replace('}}', '')
+    case Type.Text:
       return expression.replace('{{', '{').replace('}}', '}')
+    case Type.Element: {
+      // 匹配 xxx={{aaa}}
+      if (expression.startsWith('{{') && expression.endsWith('}}')) {
+        return expression.replace('{{', '{').replace('}}', '}')
+      }
 
+      // 匹配 xxx="aaa-{{bbb}}"
+      if (/(?<={{).*(?=}})/gm.test(expression)) {
+        return `{\`${expression.replace('{{', '{').replace('}}', '}')}\`}`
+      }
+
+      // 普通字符串
+      return `"${expression}"`
+    }
     default:
       break
   }
