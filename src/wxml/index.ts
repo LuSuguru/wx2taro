@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-05-26 14:36:15
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-07 18:34:39
+ * @LastEditTime: 2022-06-07 18:38:05
  * @Description: wxml 解析入口
  */
 import fse from 'fs-extra'
@@ -20,13 +20,13 @@ interface Option extends ParsedPath {
   cssCode: string
 }
 
-export default function tramsform({ name, dir, scopeName, cssCode }: Option) {
+export default async function tramsform({ name, dir, scopeName, cssCode }: Option) {
   try {
     const wxmlPath = path.join(dir, `${name}.wxml`)
 
     console.log(chalk.white.bgBlue(`${wxmlPath} 编译开始~`))
 
-    const data = fse.readFileSync(wxmlPath)
+    const data = await fse.readFile(wxmlPath)
 
     const ast = parse(data.toString())
     const { blocks, compSrcMap } = generate(ast)
