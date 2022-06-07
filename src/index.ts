@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-05-26 14:36:03
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-07 18:31:03
+ * @LastEditTime: 2022-06-07 18:35:05
  * @Description: 入口
  */
 import chalk from 'chalk'
@@ -40,8 +40,8 @@ async function run() {
     // 作用域名字，用来生成 css 作用域
     const scopeName = generateScopeName(parsedEntry.name)
 
-    const jsxCode = transformWXML(parsedEntry, scopeName)
     const cssCode = await transformWxss(parsedEntry, scopeName)
+    const jsxCode = transformWXML({ ...parsedEntry, scopeName, cssCode })
 
     // 创建模板目录
     fse.ensureDirSync(targetDir)

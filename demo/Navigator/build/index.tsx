@@ -1,9 +1,10 @@
 import { FC } from '@tarojs/taro';
 import { Image, View } from '@tarojs/components';
+import './style.less';
 
 const Page: FC = (props) => {
     return (
-        <div className="index-2tlo">
+        <div className="index-mYIO">
             <>
                 {navigatorBtn.map((item, index) => (
                     <View

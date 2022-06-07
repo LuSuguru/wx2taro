@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-05-26 14:36:15
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-07 18:29:49
+ * @LastEditTime: 2022-06-07 18:34:39
  * @Description: wxml 解析入口
  */
 import fse from 'fs-extra'
@@ -15,7 +15,12 @@ import parse from './parse'
 import generate from './generate'
 import { pageTemplate } from './template'
 
-export default function tramsform({ name, dir }: ParsedPath, scopeName: string) {
+interface Option extends ParsedPath {
+  scopeName: string
+  cssCode: string
+}
+
+export default function tramsform({ name, dir, scopeName, cssCode }: Option) {
   try {
     const wxmlPath = path.join(dir, `${name}.wxml`)
 
@@ -39,7 +44,12 @@ export default function tramsform({ name, dir }: ParsedPath, scopeName: string) 
       }
     }
 
-    const importCode = [...compSrcMap].reduce((pre, [path, components]) => `${pre}import {${components.join(',')}} from '${path}'\n`, '')
+    let importCode = [...compSrcMap].reduce((pre, [path, components]) => `${pre}import {${components.join(',')}} from '${path}'\n`, '')
+
+    // 有 css 增加 css 的引用
+    if (cssCode) {
+      importCode += 'import "./style.less"\n'
+    }
 
     const jsxCode = formatCode(pageTemplate({ code, importCode, scopeName }))
 
