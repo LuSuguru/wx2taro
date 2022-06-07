@@ -2,13 +2,12 @@
  * @Author: 芦杰
  * @Date: 2022-05-25 18:21:51
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-05-27 17:53:30
+ * @LastEditTime: 2022-06-06 18:56:07
  * @Description: 对语法分析后的语法树进行格式化，
  */
 
 import { Node, Type, ASTNode } from '../type'
 
-// TODO：修改成 wxml 的解析
 function unquote(str: string) {
   const car = str.charAt(0)
   const end = str.length - 1
@@ -21,10 +20,18 @@ function unquote(str: string) {
 
 function formatAttributes(attributes: string[]) {
   return attributes.reduce((pre, attribute) => {
-    const parts = attribute.trim().split('=')
+    const parts = attribute.trim().match(/^([^=]+)=(.+)$/)
 
-    const key = parts[0]
-    const value = typeof parts[1] === 'string' ? unquote(parts[1]) : null
+    let key = ''
+    let value: string | boolean = ''
+    if (parts?.length === 3) {
+      key = parts[1]
+      value = typeof parts[2] === 'string' ? unquote(parts[2]) : null
+    } else {
+      // boolean 型的属性
+      key = attribute
+      value = true
+    }
 
     return {
       ...pre,

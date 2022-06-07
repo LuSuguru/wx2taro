@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-05-20 16:37:38
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-05-27 15:05:40
+ * @LastEditTime: 2022-06-02 18:02:47
  * @Description: 语法分析
  */
 import { Token, StackNode, Type, Position, ElementNode } from '../type'
@@ -31,7 +31,6 @@ export function parse(state: State) {
     const token = tokens[cursor]
 
     if (token.type !== Type.TagStart) {
-      // console.log(token)
       nodes.push(token as any)
 
       cursor++

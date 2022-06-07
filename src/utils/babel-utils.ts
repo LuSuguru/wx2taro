@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-06-01 17:28:11
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-01 17:36:24
+ * @LastEditTime: 2022-06-06 17:59:21
  * @Description: babel 操作方法
  */
 
@@ -18,6 +18,6 @@ export function formatCode(js: string) {
     singleQuote: true,
     trailingComma: 'es5',
     tabWidth: 4,
-    parser: 'babel-ts',
+    parser: 'babel-ts'
   })
 }

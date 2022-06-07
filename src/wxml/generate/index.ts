@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-05-27 15:05:06
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-01 18:21:51
+ * @LastEditTime: 2022-06-06 19:10:37
  * @Description: 生成代码
  */
 
@@ -75,10 +75,10 @@ function generateNode(node: ASTNode, state: State, next?: ASTNode) {
     case 'slot': {
       const { name } = node.attributes
       if (name) {
-        return `$slot$${name}$`
+        return `{props.${name}}`
       }
     }
-      return ''
+      return '{props.children}'
     // 编译 import
     case 'import': {
       return ''
@@ -90,9 +90,23 @@ function generateNode(node: ASTNode, state: State, next?: ASTNode) {
       code += generateProps(node, state)
 
       if (node.children.length) {
-        code += ' >'
-        code += node.children.map((item, index) => generateNode(item, state, node.children[index + 1])).join('\n')
-        code += `</${tagName}>`
+        let childrenCode = ''
+        node.children.forEach((item, index) => {
+          const childCode = generateNode(item, state, node.children[index + 1])
+          if (item?.attributes?.slot) {
+            code += `${item.attributes.slot}={<>{${childCode}}</>}`
+          } else {
+            childrenCode += `${childCode}\n`
+          }
+        })
+
+        if (childrenCode) {
+          code += '>'
+          code += childrenCode
+          code += `</${tagName}>`
+        } else {
+          code += '/>'
+        }
       } else {
         code += ' />'
       }
@@ -108,11 +122,6 @@ function generateNode(node: ASTNode, state: State, next?: ASTNode) {
             break
           }
         }
-      }
-
-      if (Object.keys(node.attributes).includes('slot')) {
-        state.blocks[node.attributes.slot] = code
-        return ''
       }
 
       if (node.directives) {
@@ -139,7 +148,7 @@ function generateDirect(node: ASTNode, code: string, next: ASTNode) {
     const compiled = compileExpression(value, 'direct')
 
     if (code[0] === '{') {
-      code = `<div>${code}</div>`
+      code = `<>${code}</>`
     }
 
     switch (name) {
@@ -150,7 +159,7 @@ function generateDirect(node: ASTNode, code: string, next: ASTNode) {
       case 'wx:if':
       case 'wx:elseif':
       case 'wx:elif': {
-        ifCode += `{${compiled}?${code}}:`
+        ifCode += `{${compiled}?${code}:`
 
         // 下一个兄弟节点 是 else 节点
         if (Object.keys(next || {}).some(name => name.includes('else'))) {
@@ -221,12 +230,17 @@ function generateProps(node: ASTNode, state: State) {
       }
 
       const [eventKey] = wriedName(name)
-      code += `${eventKey}={${value}()}`
+      code += `${eventKey}={${value}} `
     } else if (node.tagName === 'import') {
       state.imports.push(value)
-    } else {
-      const compiled = compileExpression(value, node.type)
-      code += `${propsMap.get(name) || name}=${compiled || 'true'}`
+    } else if (name !== 'slot') {
+      // 处理 boolen 类型属性
+      if (typeof value === 'boolean') {
+        code += `${propsMap.get(name) || name} `
+      } else {
+        const compiled = compileExpression(value, node.type)
+        code += `${propsMap.get(name) || name}=${compiled || true} `
+      }
     }
   })
 
