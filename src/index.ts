@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-05-26 14:36:03
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-07 16:46:31
+ * @LastEditTime: 2022-06-07 18:31:03
  * @Description: 入口
  */
 import chalk from 'chalk'
@@ -11,7 +11,9 @@ import path from 'path'
 import glob from 'glob-promise'
 
 import transformWXML from './wxml'
+import transformWxss from './wxss'
 import { TARGET_DIR } from './config'
+import { generateScopeName } from './utils'
 
 function getDir() {
   const dir = process.argv?.[2]
@@ -25,6 +27,7 @@ function getDir() {
 async function run() {
   const dir = getDir()
   const parseDir = path.join(process.cwd(), dir)
+  const targetDir = path.join(parseDir, TARGET_DIR)
 
   console.log(chalk.green('编译开始!'))
 
@@ -33,11 +36,20 @@ async function run() {
   // 采用串行，方便查看哪个文件编译失败
   entry.forEach(async (entryPath) => {
     const parsedEntry = path.parse(entryPath)
-    const jsxCode = transformWXML(parsedEntry)
+
+    // 作用域名字，用来生成 css 作用域
+    const scopeName = generateScopeName(parsedEntry.name)
+
+    const jsxCode = transformWXML(parsedEntry, scopeName)
+    const cssCode = await transformWxss(parsedEntry, scopeName)
 
     // 创建模板目录
-    fse.ensureDirSync(path.join(parseDir, TARGET_DIR))
-    fse.writeFileSync(path.join(parsedEntry.dir, `./${TARGET_DIR}/${parsedEntry.name}.tsx`), jsxCode)
+    fse.ensureDirSync(targetDir)
+
+    await Promise.all([
+      fse.writeFile(path.join(targetDir, `./${parsedEntry.name}.tsx`), jsxCode),
+      fse.writeFile(path.join(targetDir, `./${parsedEntry.name}.less`), cssCode)
+    ])
   })
 }
 

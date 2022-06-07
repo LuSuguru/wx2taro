@@ -18,6 +18,8 @@
     "fs-extra": "^10.1.0",
     "glob": "7.x",
     "glob-promise": "^4.2.2",
+    "postcss": "^8.4.14",
+    "postcss-taro-unit-transform": "^2.2.10",
     "prettier": "^2.6.2",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.4"

@@ -3,7 +3,7 @@ import { Image, View } from '@tarojs/components';
 
 const Page: FC = (props) => {
     return (
-        <>
+        <div className="index-2tlo">
             <>
                 {navigatorBtn.map((item, index) => (
                     <View
@@ -31,6 +31,6 @@ const Page: FC = (props) => {
                     </View>
                 ))}
             </>
-        </>
+        </div>
     );
 };

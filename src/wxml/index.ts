@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-05-26 14:36:15
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-07 16:46:53
+ * @LastEditTime: 2022-06-07 18:29:49
  * @Description: wxml 解析入口
  */
 import fse from 'fs-extra'
@@ -15,7 +15,7 @@ import parse from './parse'
 import generate from './generate'
 import { pageTemplate } from './template'
 
-export default function tramsform({ name, dir }: ParsedPath) {
+export default function tramsform({ name, dir }: ParsedPath, scopeName: string) {
   try {
     const wxmlPath = path.join(dir, `${name}.wxml`)
 
@@ -41,8 +41,10 @@ export default function tramsform({ name, dir }: ParsedPath) {
 
     const importCode = [...compSrcMap].reduce((pre, [path, components]) => `${pre}import {${components.join(',')}} from '${path}'\n`, '')
 
+    const jsxCode = formatCode(pageTemplate({ code, importCode, scopeName }))
+
     console.log(chalk.white.bgGreen(`${wxmlPath} 编译成功~`))
-    return formatCode(pageTemplate({ code, importCode }))
+    return jsxCode
   } catch (e) {
     console.error(e)
   }
