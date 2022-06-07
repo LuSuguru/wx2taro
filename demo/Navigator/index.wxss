@@ -1,0 +1,58 @@
+/* pages/refund/chooseRefundType/index.wxss */
+
+.left {
+    position: relative;
+}
+
+.refund-type-item {
+    justify-content: space-between;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    margin: 0 32rpx;
+    padding: 48rpx 32rpx 48rpx 96rpx;
+}
+
+.refund-type-item:first-child {
+    margin-top: 16rpx;
+    border-radius: 12rpx 12rpx 0 0;
+}
+
+.refund-type-item:last-child {
+    border-radius: 0 0 12rpx 12rpx;
+}
+
+.right-arrow {
+    width: 24rpx;
+    height: 32rpx;
+    padding-left: 16rpx;
+}
+
+.refund-type-item i {
+    width: 100rpx;
+    height: 100rpx;
+    background-color: #ccc;
+}
+
+.refund-type-item .title {
+    font-size: 36rpx;
+    margin-bottom: 16rpx;
+    font-family: PingFangSC-Semibold;
+    color: #333333;
+    font-weight: 600;
+}
+
+.refund-type-item .description {
+    font-family: PingFangSC-Regular;
+    font-size: 26rpx;
+    color: #666666;
+    font-weight: 400;
+}
+
+.jump-btn-icon-left {
+    width: 56rpx;
+    height: 56rpx;
+    position: absolute;
+    left: -76rpx;
+    top: 6rpx;
+}

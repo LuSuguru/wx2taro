@@ -2,38 +2,48 @@
  * @Author: 芦杰
  * @Date: 2022-05-26 14:36:15
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-07 14:38:18
- * @Description: wxml 入口
+ * @LastEditTime: 2022-06-07 16:46:53
+ * @Description: wxml 解析入口
  */
 import fse from 'fs-extra'
-import Path from 'path'
+import chalk from 'chalk'
+import path, { ParsedPath } from 'path'
+
+import { formatCode } from '../utils/babel-utils'
 
 import parse from './parse'
 import generate from './generate'
 import { pageTemplate } from './template'
 
-import { formatCode } from '../utils/babel-utils'
+export default function tramsform({ name, dir }: ParsedPath) {
+  try {
+    const wxmlPath = path.join(dir, `${name}.wxml`)
 
-export default async function tramsform() {
-  const data = await fse.readFile(Path.join(process.cwd(), './demo/index.wxml'))
+    console.log(chalk.white.bgBlue(`${wxmlPath} 编译开始~`))
 
-  const ast = parse(data.toString())
-  const { blocks, compSrcMap } = generate(ast)
+    const data = fse.readFileSync(wxmlPath)
 
-  let code = ''
-  for (const entry of Object.entries(blocks)) {
-    const [name, value] = entry
+    const ast = parse(data.toString())
+    const { blocks, compSrcMap } = generate(ast)
 
-    if (Number.isNaN(+name)) {
-      code = code
-        .replace(`$template$${name}$`, value)
-        .replace(`$slot${name}$`, value) || ''
-    } else {
-      code += value
+    let code = ''
+    for (const entry of Object.entries(blocks)) {
+      const [name, value] = entry
+
+      if (Number.isNaN(+name)) {
+        code = code
+          .replace(`$template$${name}$`, value)
+          .replace(`$slot${name}$`, value) || ''
+      } else {
+        code += value
+      }
     }
+
+    const importCode = [...compSrcMap].reduce((pre, [path, components]) => `${pre}import {${components.join(',')}} from '${path}'\n`, '')
+
+    console.log(chalk.white.bgGreen(`${wxmlPath} 编译成功~`))
+    return formatCode(pageTemplate({ code, importCode }))
+  } catch (e) {
+    console.error(e)
   }
-
-  const importCode = [...compSrcMap].reduce((pre, [path, components]) => `${pre}import {${components.join(',')}} from '${path}'\n`, '')
-
-  fse.writeFileSync(Path.join(process.cwd(), './build/index.tsx'), formatCode(pageTemplate({ code, importCode })))
 }

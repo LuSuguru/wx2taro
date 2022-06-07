@@ -1,0 +1,9 @@
+<view class="refund-type-item" bindtap='itemTap' data-refund-type="{{item.refundType}}" data-refund-sub-type="{{item.refundSubType}}" wx:for="{{navigatorBtn}}" wx:key='{{item.title}}'>
+    <view class="left">
+        <image class="jump-btn-icon-left f-l mr-20 mt-8" src="{{ICON_MAP[item.icon]}}" alt="" />
+        <view class='title'>{{item.title}}</view>
+        <view class='description'>{{item.desc}}</view>
+    </view>
+    <image class="right-arrow" src="https://img.hicdn.cn/fed/images/20190522/c2d1d1a41ab6a68bd7abd7806591eae1.png"></image>
+</view>
+
