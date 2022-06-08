@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-06-08 11:35:44
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-08 15:16:46
+ * @LastEditTime: 2022-06-08 16:14:10
  * @Description: 编译 js
  */
 
@@ -11,6 +11,7 @@ import chalk from 'chalk'
 import glob from 'glob-promise'
 
 import { getASTByPath, getASTByCode, formatCodeFormAST } from '../utils/babel-utils'
+import parse from './parse'
 
 interface Option extends ParsedPath {
   targetCode: string
@@ -33,6 +34,8 @@ export default async function tramsform({ targetCode, ...parsedPath }: Option) {
 
   // 需要编译的源代码AST
   const sourceAST = getASTByPath(scriptPath)
+  parse(sourceAST)
+
   // 目标代码的 AST
   const targetAST = getASTByCode(targetCode)
 
