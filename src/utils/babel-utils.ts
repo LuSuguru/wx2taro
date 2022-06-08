@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-06-01 17:28:11
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-06 17:59:21
+ * @LastEditTime: 2022-06-08 11:35:06
  * @Description: babel 操作方法
  */
 
@@ -20,4 +20,40 @@ export function formatCode(js: string) {
     tabWidth: 4,
     parser: 'babel-ts'
   })
+}
+
+// 将 code 转化为 AST
+export function getASTByCode(code: string): t.File {
+  return parse(code, {
+    allowImportExportEverywhere: true,
+    sourceType: 'module',
+    plugins: [
+      'jsx',
+      'typescript',
+    ],
+  })
+}
+
+export function getASTByPath(path: string) {
+  const code = fse.readFileSync(path).toString()
+  return getASTByCode(code)
+}
+
+// 将 AST 转化为 Code，不格式化
+export function getCodeByAST(ast: t.Node) {
+  return generate(ast, {
+    jsescOption: {
+      minimal: true,
+    },
+  }).code
+}
+
+// 将 AST 转化为 code
+export function formatCodeFormAST(ast: t.Node) {
+  return formatCode(generate(ast, {
+    jsescOption: {
+      minimal: true,
+    },
+    retainLines: true,
+  }).code)
 }

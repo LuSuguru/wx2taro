@@ -2,12 +2,12 @@
  * @Author: 芦杰
  * @Date: 2022-05-27 15:05:06
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-06 19:10:37
+ * @LastEditTime: 2022-06-08 11:28:48
  * @Description: 生成代码
  */
 
 import { ASTNode, Type } from '../type'
-import { titleCase } from './utils'
+import { titleCase } from '../../utils'
 import { propsMap, componentPathMap } from './config'
 
 interface State {

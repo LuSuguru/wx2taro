@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-06-07 18:23:05
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-07 18:24:38
+ * @LastEditTime: 2022-06-08 11:28:39
  * @Description: 工具函数
  */
 
@@ -41,4 +41,9 @@ export function uuid(len = 4, radix = 62) {
 
 export function generateScopeName(name: string) {
   return `${name}-${uuid()}`
+}
+
+// xx-yy-zz -> XxYyZz
+export function titleCase(str: string) {
+  return `${str.slice(0, 1).toUpperCase()}${str.replace(/\-(\w)/g, (_, letter) => letter.toUpperCase()).slice(1)}`
 }

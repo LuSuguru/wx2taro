@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-06-07 16:05:54
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-07 18:29:22
+ * @LastEditTime: 2022-06-08 11:41:53
  * @Description: wxss 解析入口
  */
 import { ParsedPath } from 'path'
@@ -19,14 +19,16 @@ function rpx2pxPlugin(root: Root) {
   })
 }
 
-export default async function transform({ name, dir }: ParsedPath, scopeName: string) {
+async function getCssPath({ name, dir }: ParsedPath) {
   const cssPaths = await glob(`${dir}/${name}.@(less|wxss)`)
+  return cssPaths?.[0]
+}
 
-  if (!cssPaths?.length) {
+export default async function transform(parsedPath: ParsedPath, scopeName: string) {
+  const cssPath = await getCssPath(parsedPath)
+  if (!cssPath) {
     return
   }
-
-  const [cssPath] = cssPaths
 
   console.log(chalk.white.bgBlue(`${cssPath}  编译开始~`))
 
