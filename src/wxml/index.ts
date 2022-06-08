@@ -2,14 +2,12 @@
  * @Author: 芦杰
  * @Date: 2022-05-26 14:36:15
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-08 11:39:44
+ * @LastEditTime: 2022-06-08 15:15:17
  * @Description: wxml 解析入口
  */
 import fse from 'fs-extra'
 import chalk from 'chalk'
 import path, { ParsedPath } from 'path'
-
-import { formatCode } from '../utils/babel-utils'
 
 import parse from './parse'
 import generate from './generate'
@@ -50,7 +48,7 @@ export default async function tramsform({ name, dir, scopeName, cssCode }: Optio
     importCode += 'import "./style.less"\n'
   }
 
-  const jsxCode = formatCode(pageTemplate({ code, importCode, scopeName }))
+  const jsxCode = pageTemplate({ code, importCode, scopeName })
 
   console.log(chalk.white.bgGreen(`${wxmlPath} 编译成功~`))
   return jsxCode
