@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-05-26 14:36:03
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-08 15:12:33
+ * @LastEditTime: 2022-06-08 20:22:53
  * @Description: 入口
  */
 import chalk from 'chalk'
@@ -43,8 +43,8 @@ async function run() {
       const scopeName = generateScopeName(parsedEntry.name)
 
       const cssCode = await transformWxss(parsedEntry, scopeName)
-      let targetCode = await transformWXML({ ...parsedEntry, scopeName, cssCode })
-      targetCode = await transformScript({ targetCode, ...parsedEntry })
+      const { returnCode, imports } = await transformWXML({ ...parsedEntry, scopeName, cssCode })
+      const targetCode = await transformScript({ returnCode, imports, ...parsedEntry })
 
       // 创建模板目录
       fse.ensureDirSync(targetDir)

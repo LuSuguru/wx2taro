@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-05-26 14:36:15
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-08 15:15:17
+ * @LastEditTime: 2022-06-08 20:41:32
  * @Description: wxml 解析入口
  */
 import fse from 'fs-extra'
@@ -26,7 +26,7 @@ export default async function tramsform({ name, dir, scopeName, cssCode }: Optio
   const data = await fse.readFile(wxmlPath)
 
   const ast = parse(data.toString())
-  const { blocks, compSrcMap } = generate(ast)
+  const { blocks, imports } = generate(ast)
 
   let code = ''
   for (const entry of Object.entries(blocks)) {
@@ -41,15 +41,16 @@ export default async function tramsform({ name, dir, scopeName, cssCode }: Optio
     }
   }
 
-  let importCode = [...compSrcMap].reduce((pre, [path, components]) => `${pre}import {${components.join(',')}} from '${path}'\n`, '')
-
   // 有 css 增加 css 的引用
   if (cssCode) {
-    importCode += 'import "./style.less"\n'
+    imports.set('./style.less', [])
   }
 
-  const jsxCode = pageTemplate({ code, importCode, scopeName })
+  const returnCode = pageTemplate({ code, scopeName })
 
   console.log(chalk.white.bgGreen(`${wxmlPath} 编译成功~`))
-  return jsxCode
+  return {
+    imports,
+    returnCode
+  }
 }

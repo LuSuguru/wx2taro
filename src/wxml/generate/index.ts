@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-05-27 15:05:06
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-08 11:28:48
+ * @LastEditTime: 2022-06-08 20:20:55
  * @Description: 生成代码
  */
 
@@ -11,9 +11,8 @@ import { titleCase } from '../../utils'
 import { propsMap, componentPathMap } from './config'
 
 interface State {
-  imports: string[]
   methods: string[]
-  compSrcMap: Map<string, string[]>
+  imports: Map<string, string[]>
   blocks: {
     [key: string]: string
   }
@@ -30,9 +29,8 @@ const componentPathCache = new Set()
 
 export default function generate(nodes: ASTNode[]) {
   const state: State = {
-    imports: [],
+    imports: new Map([['@tarojs/taro', ['FC']]]),
     methods: [],
-    compSrcMap: new Map(),
     blocks: {},
   }
 
@@ -115,8 +113,8 @@ function generateNode(node: ASTNode, state: State, next?: ASTNode) {
       if (!componentPathCache.has(tagName)) {
         for (const [path, components] of componentPathMap) {
           if (components.includes(tagName)) {
-            const arr = state.compSrcMap.get(path) || []
-            state.compSrcMap.set(path, [...arr, tagName])
+            const arr = state.imports.get(path) || []
+            state.imports.set(path, [...arr, tagName])
 
             componentPathCache.add(tagName)
             break
@@ -232,7 +230,7 @@ function generateProps(node: ASTNode, state: State) {
       const [eventKey] = wriedName(name)
       code += `${eventKey}={${value}} `
     } else if (node.tagName === 'import') {
-      state.imports.push(value)
+      state.imports.set(value, [''])
     } else if (name !== 'slot') {
       // 处理 boolen 类型属性
       if (typeof value === 'boolean') {

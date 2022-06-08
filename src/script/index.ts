@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-06-08 11:35:44
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-08 16:14:10
+ * @LastEditTime: 2022-06-08 20:25:55
  * @Description: 编译 js
  */
 
@@ -10,11 +10,13 @@ import { ParsedPath } from 'path'
 import chalk from 'chalk'
 import glob from 'glob-promise'
 
-import { getASTByPath, getASTByCode, formatCodeFormAST } from '../utils/babel-utils'
+import { getASTByPath, getASTByCode } from '../utils/babel-utils'
 import parse from './parse'
+import generate from './generate'
 
 interface Option extends ParsedPath {
-  targetCode: string
+  returnCode: string
+  imports: Map<string, string[]>
 }
 
 async function getScriptPath({ name, dir }: ParsedPath) {
@@ -23,7 +25,7 @@ async function getScriptPath({ name, dir }: ParsedPath) {
   return scriptPaths?.[0]
 }
 
-export default async function tramsform({ targetCode, ...parsedPath }: Option) {
+export default async function tramsform({ returnCode, imports, ...parsedPath }: Option) {
   const scriptPath = await getScriptPath(parsedPath)
 
   if (!scriptPath) {
@@ -32,15 +34,19 @@ export default async function tramsform({ targetCode, ...parsedPath }: Option) {
 
   console.log(chalk.white.bgBlue(`${scriptPath} 编译开始~`))
 
-  // 需要编译的源代码AST
+  // 编译过程
+  // 需要编译的源代码 AST
   const sourceAST = getASTByPath(scriptPath)
-  parse(sourceAST)
 
-  // 目标代码的 AST
-  const targetAST = getASTByCode(targetCode)
+  // 目标代码 return 的 AST
+  const returnAST = getASTByCode(returnCode)
 
-  // TODO:转换流程
+  // 从源代码 AST 获得配置
+  const config = parse(sourceAST, imports)
+
+  // 将配置 更新到目标 AST 中，生成转换后的代码
+  const code = generate(returnAST, config)
 
   console.log(chalk.white.bgGreen(`${scriptPath} 编译成功~`))
-  return formatCodeFormAST(targetAST)
+  return code
 }

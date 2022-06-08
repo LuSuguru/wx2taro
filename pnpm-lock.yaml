@@ -3,9 +3,11 @@ lockfileVersion: 5.3
 specifiers:
   '@babel/generator': ^7.18.2
   '@babel/parser': ^7.18.4
+  '@babel/template': ^7.16.7
   '@babel/traverse': ^7.18.2
   '@babel/types': ^7.18.4
   '@types/babel__generator': ^7.6.4
+  '@types/babel__template': ^7.4.1
   '@types/babel__traverse': ^7.17.1
   '@types/fs-extra': ^9.0.13
   '@types/node': ^17.0.35
@@ -27,11 +29,13 @@ specifiers:
   postcss-taro-unit-transform: ^2.2.10
   prettier: ^2.6.2
   ts-node: ^10.7.0
+  tslib: ^2.4.0
   typescript: ^4.6.4
 
 dependencies:
   '@babel/generator': registry.npmmirror.com/@babel/generator/7.18.2
   '@babel/parser': registry.npmmirror.com/@babel/parser/7.18.4
+  '@babel/template': registry.npmmirror.com/@babel/template/7.16.7
   '@babel/traverse': registry.npmmirror.com/@babel/traverse/7.18.2
   '@babel/types': registry.npmmirror.com/@babel/types/7.18.4
   '@types/node': registry.npmmirror.com/@types/node/17.0.35
@@ -47,6 +51,7 @@ dependencies:
 
 devDependencies:
   '@types/babel__generator': registry.npmmirror.com/@types/babel__generator/7.6.4
+  '@types/babel__template': registry.npmmirror.com/@types/babel__template/7.4.1
   '@types/babel__traverse': registry.npmmirror.com/@types/babel__traverse/7.17.1
   '@types/fs-extra': registry.npmmirror.com/@types/fs-extra/9.0.13
   '@types/prettier': registry.npmmirror.com/@types/prettier/2.6.3
@@ -59,6 +64,7 @@ devDependencies:
   eslint-plugin-jsx-a11y: registry.npmmirror.com/eslint-plugin-jsx-a11y/6.5.1_eslint@8.15.0
   eslint-plugin-react: registry.npmmirror.com/eslint-plugin-react/7.30.0_eslint@8.15.0
   eslint-plugin-react-hooks: registry.npmmirror.com/eslint-plugin-react-hooks/4.5.0_eslint@8.15.0
+  tslib: registry.npmmirror.com/tslib/2.4.0
 
 packages:
 
@@ -140,7 +146,6 @@ packages:
     version: 7.18.4
     engines: {node: '>=6.0.0'}
     hasBin: true
-    dev: false
 
   registry.npmmirror.com/@babel/runtime-corejs3/7.18.0:
     resolution: {integrity: sha512-G5FaGZOWORq9zthDjIrjib5XlcddeqLbIiDO3YQsut6j7aGf76xn0umUC/pA6+nApk3hQJF4JzLzg5PCl6ewJg==, registry: https://rnpm.yangtuojia.com/, tarball: https://registry.npmmirror.com/@babel/runtime-corejs3/-/runtime-corejs3-7.18.0.tgz}
@@ -351,6 +356,15 @@ packages:
     name: '@types/babel__generator'
     version: 7.6.4
     dependencies:
+      '@babel/types': registry.npmmirror.com/@babel/types/7.18.4
+    dev: true
+
+  registry.npmmirror.com/@types/babel__template/7.4.1:
+    resolution: {integrity: sha512-azBFKemX6kMg5Io+/rdGT0dkGreboUVR0Cdm3fz9QJWpaQGJRQXl7C+6hOTCZcMll7KFyEQpgbYI2lHdsS4U7g==, registry: https://rnpm.yangtuojia.com/, tarball: https://registry.npmmirror.com/@types/babel__template/-/babel__template-7.4.1.tgz}
+    name: '@types/babel__template'
+    version: 7.4.1
+    dependencies:
+      '@babel/parser': registry.npmmirror.com/@babel/parser/7.18.4
       '@babel/types': registry.npmmirror.com/@babel/types/7.18.4
     dev: true
 
@@ -2464,6 +2478,12 @@ packages:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==, registry: https://rnpm.yangtuojia.com/, tarball: https://registry.npmmirror.com/tslib/-/tslib-1.14.1.tgz}
     name: tslib
     version: 1.14.1
+    dev: true
+
+  registry.npmmirror.com/tslib/2.4.0:
+    resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==, registry: https://rnpm.yangtuojia.com/, tarball: https://registry.npmmirror.com/tslib/-/tslib-2.4.0.tgz}
+    name: tslib
+    version: 2.4.0
     dev: true
 
   registry.npmmirror.com/tsutils/3.21.0_typescript@4.6.4:
