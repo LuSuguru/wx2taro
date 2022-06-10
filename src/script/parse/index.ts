@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-06-08 15:32:53
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-09 18:13:06
+ * @LastEditTime: 2022-06-10 16:58:17
  * @Description: 解析源代码 AST，生成 config
  */
 
@@ -18,6 +18,7 @@ export default function parse(ast: t.File, imports: Config['imports']) {
       ast: null,
       stateKeys: []
     },
+    properties: new Map(),
     imports
   }
 
@@ -33,6 +34,9 @@ export default function parse(ast: t.File, imports: Config['imports']) {
         switch ((key as t.Identifier).name) {
           case ArgumentProp.Data:
             Asset.data.parse(value as t.ObjectExpression, config)
+            break
+          case ArgumentProp.Properies:
+            Asset.properies.parse(value as t.ObjectExpression, config)
             break
           case ArgumentProp.Methods:
           default:

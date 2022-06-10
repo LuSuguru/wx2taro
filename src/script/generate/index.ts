@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-06-08 16:19:42
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-08 20:44:27
+ * @LastEditTime: 2022-06-10 17:19:04
  * @Description: 将配置转换为目标代码 AST 的内容
  */
 
@@ -15,6 +15,7 @@ import * as Asset from '../asset'
 
 export default function transform(ast: t.File, config: Config) {
   Asset.data.transform(ast, config)
+  Asset.properies.transform(ast, config)
 
   const importCode = [...config.imports]
     .sort((a, b) => b[1].length - a[1].length)
