@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-06-08 16:44:33
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-08 20:48:43
+ * @LastEditTime: 2022-06-09 18:07:04
  * @Description: data 的编译
  */
 
@@ -57,7 +57,7 @@ export default class DataAsset implements Asset {
         // 找到页面组件的函数体
         if ((node.id as t.Identifier).name !== 'Page') return
 
-        // 插入 定义 state 的语句
+        // 插入定义 state 的语句
         ((node.init as t.ArrowFunctionExpression).body as t.BlockStatement).body.unshift(stateAST)
       }
     })

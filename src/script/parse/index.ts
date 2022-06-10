@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-06-08 15:32:53
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-08 20:32:30
+ * @LastEditTime: 2022-06-09 18:13:06
  * @Description: 解析源代码 AST，生成 config
  */
 
@@ -34,6 +34,7 @@ export default function parse(ast: t.File, imports: Config['imports']) {
           case ArgumentProp.Data:
             Asset.data.parse(value as t.ObjectExpression, config)
             break
+          case ArgumentProp.Methods:
           default:
             break
         }
