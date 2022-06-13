@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-06-10 14:52:23
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-10 17:21:19
+ * @LastEditTime: 2022-06-13 15:13:33
  * @Description: properies 的编译
  */
 
@@ -40,14 +40,14 @@ export default {
         }
       })
 
-      config.properties.set((property.key as t.Identifier).name, value)
+      config.properties.set((property.key as t.Identifier).name, { value })
     })
   },
 
   transform(ast, { properties }) {
     const propValueAstMap = {}
     // 生成 props 的解构字符串模板
-    const propTemplate = [...properties].reduce((pre, [key, value]) => {
+    const propTemplate = [...properties].reduce((pre, [key, { value }]) => {
       if (value) {
         propValueAstMap[key] = value
         return `${pre}${key}=%%${key}%%,`

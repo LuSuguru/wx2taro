@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-06-08 15:50:09
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-10 16:58:02
+ * @LastEditTime: 2022-06-13 16:15:36
  * @Description: 编译时的配置项
  */
 
@@ -19,6 +19,10 @@ export interface Config {
   /** 属性 */
   properties: Map<string, {
     value: t.Node
+  }>
+  /** 方法 */
+  methods: Map<string, {
+    value: t.ObjectMethod
   }>
 
   /** 需要引入的 */

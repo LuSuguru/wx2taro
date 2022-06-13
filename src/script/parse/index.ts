@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-06-08 15:32:53
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-10 16:58:17
+ * @LastEditTime: 2022-06-13 16:52:57
  * @Description: 解析源代码 AST，生成 config
  */
 
@@ -19,6 +19,7 @@ export default function parse(ast: t.File, imports: Config['imports']) {
       stateKeys: []
     },
     properties: new Map(),
+    methods: new Map(),
     imports
   }
 
@@ -29,16 +30,19 @@ export default function parse(ast: t.File, imports: Config['imports']) {
       }
 
       (node.arguments as t.ObjectExpression[])?.[0]?.properties.forEach((property: t.ObjectProperty) => {
-        const { key, value } = property
+        const key = property.key as t.Identifier
+        const value = property.value as t.ObjectExpression
 
-        switch ((key as t.Identifier).name) {
+        switch (key.name) {
           case ArgumentProp.Data:
-            Asset.data.parse(value as t.ObjectExpression, config)
+            Asset.data.parse(value, config)
             break
           case ArgumentProp.Properies:
-            Asset.properies.parse(value as t.ObjectExpression, config)
+            Asset.properies.parse(value, config)
             break
           case ArgumentProp.Methods:
+            Asset.methods.parse(value, config)
+            break
           default:
             break
         }
