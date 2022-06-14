@@ -2,13 +2,44 @@
  * @Author: 芦杰
  * @Date: 2022-06-13 11:32:31
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-13 18:09:39
+ * @LastEditTime: 2022-06-14 14:56:05
  * @Description: methods 的解析
  */
 
 import * as t from '@babel/types'
 import { Asset } from '../config'
 import traverse from '@babel/traverse'
+
+// async queryNavigator() {
+//   let { orderId, tradeId, itemLineId, flashGoBatchRefund } = this.data.options;
+//   const params = {
+//       tradeId,
+//       orderId,
+//       itemLineId,
+//       flashGoBatchRefund
+//   };
+//   const res = await action.getNavigator(params);
+
+//   this.setData({
+//       navigatorBtn: handleBtnData(res.data.navigator)
+//   });
+// }
+
+// ====>>>>
+
+// const queryNavigator = async () => {
+//   let { orderId, tradeId, itemLineId, flashGoBatchRefund } = state.options;
+//   const params = {
+//       tradeId,
+//       orderId,
+//       itemLineId,
+//       flashGoBatchRefund,
+//   };
+//   const res = await action.getNavigator(params);
+//   setState({
+//       navigatorBtn: handleBtnData(res.data.navigator),
+//   });
+// };
 
 export default {
   parse(node, config) {

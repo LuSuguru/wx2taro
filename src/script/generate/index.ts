@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-06-08 16:19:42
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-14 14:32:03
+ * @LastEditTime: 2022-06-14 16:39:38
  * @Description: 将配置转换为目标代码 AST 的内容
  */
 
@@ -17,6 +17,7 @@ export default function transform(ast: t.File, config: Config) {
   Asset.data.transform(ast, config)
   Asset.properies.transform(ast, config)
   Asset.methods.transform(ast, config)
+  Asset.computeds.transform(ast, config)
 
   const { notConstructor } = config
 
