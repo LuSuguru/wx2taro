@@ -2,7 +2,7 @@
  * @Author: 芦杰
  * @Date: 2022-06-08 15:50:09
  * @LastEditors: 芦杰
- * @LastEditTime: 2022-06-13 16:15:36
+ * @LastEditTime: 2022-06-14 14:44:35
  * @Description: 编译时的配置项
  */
 
@@ -24,6 +24,8 @@ export interface Config {
   methods: Map<string, {
     value: t.ObjectMethod
   }>
+  /** 不是页面，函数构造器的代码 AST */
+  notConstructor: t.Node[]
 
   /** 需要引入的 */
   imports: Map<string, string[]>
@@ -37,14 +39,19 @@ export interface Asset {
   transform(ast: t.File, config: Config): void
 }
 
-// 类型白名单
+/** 类型白名单 */
 export const typeWhileList = [
   'ComponentWithComputed',
   'Page',
   'Component'
 ]
 
-// 参数属性枚举
+/** import 黑名单，编译时直接删除 */
+export const importBlackList = [
+  'miniprogram-computed'
+]
+
+/** 参数属性枚举 */
 export enum ArgumentProp {
   Data = 'data',
   Properies = 'properties',
