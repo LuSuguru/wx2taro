@@ -1,5 +1,5 @@
 {
-  "name": "@yt/wx2taro",
+  "name": "wx2taro",
   "version": "1.0.5",
   "description": "小程序代码转换为 taro 代码",
   "main": "index.js",
