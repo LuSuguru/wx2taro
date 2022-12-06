@@ -1,0 +1,17 @@
+coverage
+docs
+node_modules
+src
+public
+.vscode
+.editorconfig
+.eslintignore
+.eslintrc
+.fatherrc.ts
+.gitignore
+tsconfig.json
+yarn-error.log
+yarn.lock
+build
+webpack_cache
+.entries

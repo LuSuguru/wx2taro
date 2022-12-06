@@ -1,0 +1,9 @@
+<view class="time-tags-wrap" >
+    <view class="hi-tag-wrap {{selectedItem === item.key? 'hi-tag-active': ''}}"
+        wx:for="{{timeButtons}}"
+        bindtap="onTimeChange"
+        data-key="{{item.key}}"
+    >
+        {{item.label}}
+    </view>
+</view>

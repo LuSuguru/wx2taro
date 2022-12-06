@@ -1,0 +1,19 @@
+.time-tags-wrap{
+    /* display: flex; */
+    padding: 16rpx 24rpx;
+    justify-content: space-around;
+    display: none;
+}
+
+.hi-tag-wrap{
+    height: 56rpx;
+    border: 1rpx solid #CCCCCC;
+    border-radius: 30rpx;
+    padding: 0 36rpx;
+    line-height: 56rpx;
+}
+
+.hi-tag-active{
+    border: 1rpx solid #EF344B;
+    color: #EF344B;
+}

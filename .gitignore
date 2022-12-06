@@ -1,0 +1,6 @@
+/node_modules
+/demo/build/
+package-lock.json
+yarn.lock
+/dist
+.DS_Store
