@@ -312,7 +312,7 @@ js,ts 相对于 wxml 有现成的 babel 可以使用，相对来说简单很多�
 
 <img src="./image4.png"/>
 
-在整个解析过程中，我们维护了一个 config 结构，待装换的代码通过 ast 更新 config，再通过 config 生成新的代码，基于 wxml 的语法，每个组件分成 data ,method，property，lifetimes 等配置，每个页面分成 data, pageMethods, pageLifes 等配置，因此我们的 config 也包含这些配置
+在整个解析过程中，我们维护了一个 config 结构，待转换的代码通过 ast 更新 config，再通过 config 生成新的代码，基于 wxml 的语法，每个组件分成 data ,method，property，lifetimes 等配置，每个页面分成 data, pageMethods, pageLifes 等配置，因此我们的 config 也包含这些配置
 
 ```ts
 /** 解析出的配置类型 */
